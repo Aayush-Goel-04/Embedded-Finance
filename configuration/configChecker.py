@@ -146,7 +146,13 @@ def Matching(match_dict):
 
 
 
-
+print()
+print("------------------------------ Raw file contents ------------------------------")
+print()
+print(fileA.head())
+print()
+print(fileB.head())
+print()
 print("------------------------------ Validate all rules ------------------------------")
 print()
 print(Validation(rules))
