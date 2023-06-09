@@ -97,20 +97,76 @@ def Generate_map(uniqueA, uniqueB, sumA, sumB):
         if sizeB != len(fileB):
             print("Unique UID can't be established in file B!")
 
+    for _ in sumA.keys():
+        fileA[sumA[_]] = fileA.groupby(_)[sumA[_]].transform('sum')
+        fileA = fileA.drop_duplicates(subset=[_])
+
+    for _ in sumB.keys():
+        fileB[sumB[_]] = fileB.groupby(_)[sumB[_]].transform('sum')
+        fileB = fileB.drop_duplicates(subset=[_])
+
+def Matching(match_dict):
+    global fileA, fileB
+    closed_records, open_records = None, None
+    for _ in match_dict.keys():
+        match_type = match_dict[_].pop(-1)
+        if match_type == "ALL_A":
+            closed_records = pd.merge(fileA, fileB, left_on=[_]*(len(match_dict[_])), right_on=match_dict[_], how='left')
+            unmatched_records = closed_records[closed_records.isna().any(axis=1)]
+            matched_records = closed_records.dropna()
+            if closed_records.isna().any().any():
+                print()
+                print("Couldn't match all records !!! Following are open/unmatched records")
+                print()
+                print(unmatched_records)
+            else:
+                print()
+                print("Records closed/matched !!")
+            print()
+            print("Closed/Matched records")
+            print()
+            print(matched_records)
+        
+        if match_type == "ALL_B":
+            closed_records = pd.merge(fileB, fileA, left_on=[_]*(len(match_dict[_])), right_on=match_dict[_], how='left')
+            unmatched_records = closed_records[closed_records.isna().any(axis=1)]
+            matched_records = closed_records.dropna()
+            if closed_records.isna().any().any():
+                print()
+                print("Couldn't match all records !!! Following are open/unmatched records")
+                print()
+                print(unmatched_records)
+            else:
+                print()
+                print("Records closed/matched !!")
+            print()
+            print("Closed/Matched records")
+            print()
+            print(matched_records)
 
 
-print("Validate all rules:")
+
+
+print("------------------------------ Validate all rules ------------------------------")
+print()
 print(Validation(rules))
 print()
 Data_transform(limitsA, limitsB, new_colsA, new_colsB)
-print("After Data Transform:")
+print("------------------------------ After Data Transform ------------------------------")
+print()
 print(fileA.head())
 print()
 print(fileB.head())
 print()
 Generate_map(uniqueA, uniqueB, sumA, sumB)
-print("After Map Generation:")
+print("------------------------------ After Map Generation ------------------------------")
+print()
 print(fileA.head())
 print()
 print(fileB.head())
 print()
+print("------------------------------ After Matching ------------------------------")
+print()
+Matching(match_dict)
+print()
+

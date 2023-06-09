@@ -21,7 +21,7 @@ config.set('generate_map', 'sumA', '{}')
 config.set('generate_map', 'sumB', '{"name":"balance"}')
 
 config.add_section('matching')
-config.set('matching', 'match_dict', '{"netamt":["balance", "pending_amt"], "name":["title"]}')
+config.set('matching', 'match_dict', '{"name":["title", "ALL_A"], "netamt":["balance", "pending_amt", "ANY_A"]}')
 
 # Write the new structure to the new file
 with open("config.ini", 'w') as configfile:
